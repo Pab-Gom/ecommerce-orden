@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.ecommerce.orden_service.dto.OrdenDto;
+import com.ecommerce.orden_service.dto.OrdenRequestDto;
+import com.ecommerce.orden_service.dto.OrdenResponseDto;
 import com.ecommerce.orden_service.model.Orden;
 import com.ecommerce.orden_service.service.OrdenService;
 
@@ -22,10 +23,10 @@ public class OrdenController {
 
     // ****CREAR ORDEN
     @PostMapping
-    public ResponseEntity<OrdenDto> crearOrden(
-        @Valid @RequestBody OrdenDto dto) {
-        return ResponseEntity.ok(ordenService.crearOrden(dto));
-}
+    public ResponseEntity<OrdenResponseDto> crearOrden(
+        @Valid @RequestBody OrdenRequestDto dto) {
+    return ResponseEntity.ok(ordenService.crearOrden(dto));
+    }
     // ****OBTENER TODAS
     @GetMapping
     public ResponseEntity<List<Orden>> obtenerTodas(){
@@ -52,10 +53,7 @@ public class OrdenController {
 
     // ****ACTUALIZAR ORDEN COMPLETA
     @PutMapping("/{id}")
-    public ResponseEntity<Orden> actualizarOrden(
-            @PathVariable Long id,
-            @RequestBody Orden orden){
-
+    public ResponseEntity<Orden> actualizarOrden(@PathVariable Long id,@RequestBody Orden orden){
         return ResponseEntity.ok(ordenService.actualizarOrden(id, orden));
     }
 
@@ -64,8 +62,7 @@ public class OrdenController {
     public ResponseEntity<Orden> actualizarEstado(
             @PathVariable Long id,
             @RequestParam String estado){
-
-        return ResponseEntity.ok(ordenService.actualizarEstado(id, estado));
+      return ResponseEntity.ok(ordenService.actualizarEstado(id, estado));
     }
 
     // ****ELIMINAR POR ID

@@ -6,13 +6,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ecommerce.orden_service.client.CarritoClient;
+import com.ecommerce.orden_service.dto.OrdenRequestDto;
+import com.ecommerce.orden_service.dto.OrdenResponseDto;
+import com.ecommerce.orden_service.exception.IdUsuarioNoEncontrado;
+import com.ecommerce.orden_service.exception.OrdenNoEncontradaException;
 import com.ecommerce.orden_service.model.Orden;
 import com.ecommerce.orden_service.repository.OrdenRepository;
-
-import jakarta.validation.Valid;
-
-import com.ecommerce.orden_service.dto.OrdenDto;
-import com.ecommerce.orden_service.exception.OrdenNoEncontradaException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,14 +23,16 @@ public class OrdenService {
     @Autowired
     private OrdenRepository ordenRepository;
 
+    @Autowired
+    private CarritoClient carritoClient;
 
-       // 🔹 CREAR ORDEN
-    public OrdenDto crearOrden(OrdenDto dto) {
+    // 🔹 CREAR ORDEN
+    public OrdenResponseDto crearOrden(OrdenRequestDto dto){
 
-        log.info("Intentando crear orden para usuario {}", dto.getUsuarioId());
+        log.info("Creacion de orden para usuario {}", dto.getUsuarioId());
 
         // 🔥 1. Llamar al microservicio carrito
-        String carrito = cartClient.obtenerCarritoPorUsuario(dto.getUsuarioId());
+        String carrito = carritoClient.obtenerCarritoPorUsuario(dto.getUsuarioId());
 
         // ❌ 2. Validar carrito vacío
         if (carrito == null || carrito.isEmpty()) {
@@ -48,48 +50,42 @@ public class OrdenService {
         Orden orden = new Orden();
         orden.setUsuarioId(dto.getUsuarioId());
         orden.setTotal(dto.getTotal());
-
-
-        // 🔥 reglas de negocio
         orden.setEstado("PENDIENTE");
         orden.setFechaCreacion(LocalDateTime.now());
 
         // 💾 guardar
         Orden guardada = ordenRepository.save(orden);
 
+
         log.info("Orden creada con id {}", guardada.getId());
 
-        // 🔄 convertir a DTO
         return mapToDTO(guardada);
     }
 
-
     public List<Orden> obtenerTodas() {
-        log.info("Listando órdenes");
         return ordenRepository.findAll();
     }
 
     public Orden obtenerPorId(Long id) {
-        log.info("Buscando orden por id {}", id);
         return ordenRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.warn("Orden no encontrada por id {}", id);
-                    return new OrdenNoEncontradaException("No existe orden con este id " + id);
-                });
+                .orElseThrow(()-> new OrdenNoEncontradaException("No existe orden con este id " + id));
     }
 
     public List<Orden> obtenerPorUsuario(Long usuarioId) {
-        log.info("Buscando órdenes del usuario {}", usuarioId);
-        return ordenRepository.findByUsuarioId(usuarioId);
+
+    List<Orden> ordenes = ordenRepository.findByUsuarioId(usuarioId);
+    if (ordenes.isEmpty()) {
+        throw new IdUsuarioNoEncontrado("No existen órdenes para el usuario :" + usuarioId);
+        }
+
+    return ordenes;
     }
 
     public List<Orden> obtenerPorEstado(String estado) {
-        log.info("Buscando órdenes con estado {}", estado);
         return ordenRepository.findByEstado(estado);
     }
 
     public Orden actualizarOrden(Long id, Orden nuevaOrden) {
-        log.info("Actualizando orden con id {}", id);
 
         Orden orden = obtenerPorId(id);
 
@@ -101,7 +97,6 @@ public class OrdenService {
     }
 
     public Orden actualizarEstado(Long id, String estado) {
-        log.info("Actualizando estado de orden con id {} a {}", id, estado);
 
         Orden orden = obtenerPorId(id);
 
@@ -109,7 +104,6 @@ public class OrdenService {
             !estado.equals("PAGADO") &&
             !estado.equals("ENVIADO")) {
 
-            log.warn("Estado inválido: {}", estado);
             throw new RuntimeException("Estado inválido");
         }
 
@@ -119,27 +113,25 @@ public class OrdenService {
     }
 
     public void eliminarPorId(Long id) {
-        log.info("Eliminando orden por id {}", id);
-
         Orden orden = obtenerPorId(id);
         ordenRepository.delete(orden);
     }
 
     public void eliminarPorEstado(String estado) {
-        log.info("Eliminando órdenes con estado {}", estado);
         ordenRepository.deleteByEstado(estado);
     }
 
-    private OrdenDto mapToDTO(Orden orden) {
+    // 🔥 MAPEO CORRECTO
+    private OrdenResponseDto mapToDTO(Orden orden) {
 
-    OrdenDto dto = new OrdenDto();
+        OrdenResponseDto dto = new OrdenResponseDto();
 
-    dto.setId(orden.getId());
-    dto.setUsuarioId(orden.getUsuarioId());
-    dto.setTotal(orden.getTotal());
-    dto.setEstado(orden.getEstado());
-    dto.setFechaCreacion(orden.getFechaCreacion());
+        dto.setId(orden.getId());
+        dto.setUsuarioId(orden.getUsuarioId());
+        dto.setTotal(orden.getTotal());
+        dto.setEstado(orden.getEstado());
+        dto.setFechaCreacion(orden.getFechaCreacion());
 
-    return dto;
+        return dto;
     }
 }
