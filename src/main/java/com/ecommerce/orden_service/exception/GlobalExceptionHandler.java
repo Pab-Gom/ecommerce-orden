@@ -34,8 +34,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(IdUsuarioNoEncontrado.class)
-    public ResponseEntity<ErrorResponse> manejarIdUsuarioNoEncontrado(IdUsuarioNoEncontrado ex){
+    // ****ERROR USUARIO NO ENCONTRADO
+    @ExceptionHandler(IdUsuarioNoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> manejarIdUsuarioNoEncontrado(IdUsuarioNoEncontradoException ex){
 
         ErrorResponse error = new ErrorResponse(
 

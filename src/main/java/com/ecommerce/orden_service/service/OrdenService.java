@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ecommerce.orden_service.client.CarritoClient;
 import com.ecommerce.orden_service.dto.OrdenRequestDto;
 import com.ecommerce.orden_service.dto.OrdenResponseDto;
-import com.ecommerce.orden_service.exception.IdUsuarioNoEncontrado;
+import com.ecommerce.orden_service.exception.IdUsuarioNoEncontradoException;
 import com.ecommerce.orden_service.exception.OrdenNoEncontradaException;
 import com.ecommerce.orden_service.model.Orden;
 import com.ecommerce.orden_service.repository.OrdenRepository;
@@ -75,7 +75,7 @@ public class OrdenService {
 
     List<Orden> ordenes = ordenRepository.findByUsuarioId(usuarioId);
     if (ordenes.isEmpty()) {
-        throw new IdUsuarioNoEncontrado("No existen órdenes para el usuario :" + usuarioId);
+        throw new IdUsuarioNoEncontradoException("No existen órdenes para el usuario :" + usuarioId);
         }
 
     return ordenes;
