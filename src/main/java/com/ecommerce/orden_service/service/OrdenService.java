@@ -26,36 +26,30 @@ public class OrdenService {
     @Autowired
     private CarritoClient carritoClient;
 
-    // 🔹 CREAR ORDEN
+    //****CREAR ORDEN
     public OrdenResponseDto crearOrden(OrdenRequestDto dto){
 
         log.info("Creacion de orden para usuario {}", dto.getUsuarioId());
 
-        // 🔥 1. Llamar al microservicio carrito
         String carrito = carritoClient.obtenerCarritoPorUsuario(dto.getUsuarioId());
 
-        // ❌ 2. Validar carrito vacío
         if (carrito == null || carrito.isEmpty()) {
             log.warn("Carrito vacío para usuario {}", dto.getUsuarioId());
             throw new RuntimeException("El carrito está vacío");
         }
 
-        // ❌ 3. Validar total
         if (dto.getTotal() == null || dto.getTotal() <= 0) {
             log.warn("Total inválido");
             throw new RuntimeException("El total debe ser mayor a 0");
         }
 
-        // ✅ 4. Crear entidad
         Orden orden = new Orden();
         orden.setUsuarioId(dto.getUsuarioId());
         orden.setTotal(dto.getTotal());
         orden.setEstado("PENDIENTE");
         orden.setFechaCreacion(LocalDateTime.now());
 
-        // 💾 guardar
         Orden guardada = ordenRepository.save(orden);
-
 
         log.info("Orden creada con id {}", guardada.getId());
 
@@ -121,7 +115,6 @@ public class OrdenService {
         ordenRepository.deleteByEstado(estado);
     }
 
-    // 🔥 MAPEO CORRECTO
     private OrdenResponseDto mapToDTO(Orden orden) {
 
         OrdenResponseDto dto = new OrdenResponseDto();
