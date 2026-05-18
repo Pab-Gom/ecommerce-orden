@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // ****ERROR ORDEN NO ENCONTRADA
+    // **** ERROR ORDEN NO ENCONTRADA
     @ExceptionHandler(OrdenNoEncontradaException.class)
     public ResponseEntity<ErrorResponse> manejarOrdenNoEncontrada(OrdenNoEncontradaException ex){
 
@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    // ****ERROR GENERAL
+    // **** ERROR GENERAL
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> manejarErrorGeneral(RuntimeException ex) {
 
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // ****ERROR USUARIO NO ENCONTRADO
+    // **** ERROR USUARIO NO ENCONTRADO
     @ExceptionHandler(IdUsuarioNoEncontradoException.class)
     public ResponseEntity<ErrorResponse> manejarIdUsuarioNoEncontrado(IdUsuarioNoEncontradoException ex){
 

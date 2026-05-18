@@ -26,21 +26,25 @@ public class OrdenService{
     @Autowired
     private CarritoClient carritoClient;
 
+    // **** TOMA EL ID DEL USUARIO LOGGEADO
     private Long getUsuarioIdFromToken(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return (Long) auth.getCredentials();
     }
 
+    // **** TOMA EL EMAIL DEL USUARIO LOGEADO
     private String getEmailFromToken(){
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    // **** METODO PARA AUTORIZAR SI EL USUARIO INGRESADO TIENE ROL DE ADMIN
     private boolean esAdmin(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
     }
 
+    // **** VERIFICACION DE CARRITO, CREACION Y MAPEO DE ORDEN
     public OrdenResponseDto crearOrden(OrdenRequestDto dto){
 
         String email = getEmailFromToken();
@@ -70,6 +74,7 @@ public class OrdenService{
         return mapToDTO(guardada);
     }
 
+    // **** METODO PARA OBTENER TODAS LOS ORDENES
     public List<Orden> obtenerTodas() {
         if (esAdmin()) {
             return ordenRepository.findAll();
@@ -79,6 +84,7 @@ public class OrdenService{
         return ordenRepository.findByUsuarioId(usuarioId);
     }
 
+    // **** METODO PARA OBTENER ORDENES POR ID
     public Orden obtenerPorId(Long id) {
         Orden orden = ordenRepository.findById(id)
                 .orElseThrow(() -> new OrdenNoEncontradaException("No existe orden con este id " + id));
@@ -92,6 +98,7 @@ public class OrdenService{
         return orden;
     }
 
+    //**** METODO PARA OBTENER ORDEN POR ID DE USUARIO
     public List<Orden> obtenerPorUsuario(Long usuarioId){
         if (!esAdmin()) {
             Long miId = getUsuarioIdFromToken();
@@ -107,6 +114,7 @@ public class OrdenService{
         return ordenes;
     }
 
+    // **** METODO PARA OBTENER ORDENES POR ESTADO (ADMIN)
     public List<Orden> obtenerPorEstado(String estado){
         if (esAdmin()) {
             return ordenRepository.findByEstado(estado);
@@ -117,6 +125,7 @@ public class OrdenService{
                 .toList();
     }
 
+    // **** METODO PARA ACTUALIZAR ORDEN
     public Orden actualizarOrden(Long id, Orden nuevaOrden){
         Orden orden = obtenerPorId(id);
         orden.setUsuarioId(nuevaOrden.getUsuarioId());
@@ -125,6 +134,7 @@ public class OrdenService{
         return ordenRepository.save(orden);
     }
 
+    // **** METODO PARA ACTUALIZAR ESTADO DE ORDEN (PENDIENTE, PAGADO)
     public Orden actualizarEstado(Long id, String estado){
 
         Orden orden = obtenerPorId(id);
@@ -135,8 +145,7 @@ public class OrdenService{
         }
 
         if (!estado.equals("PENDIENTE") &&
-            !estado.equals("PAGADO") &&
-            !estado.equals("ENVIADO")) {
+            !estado.equals("PAGADO")) {
             throw new RuntimeException("Estado inválido");
         }
 
@@ -144,15 +153,18 @@ public class OrdenService{
         return ordenRepository.save(orden);
     }
 
+    // **** METODO PARA ELIMINAR ORDEN POR ID
     public void eliminarPorId(Long id) {
         Orden orden = obtenerPorId(id);
         ordenRepository.delete(orden);
     }
 
+    // **** METODO PARA ELIMINAR ORDEN PO ESTADO (PENDIENTE O PAGADO)
     public void eliminarPorEstado(String estado){
         ordenRepository.deleteByEstado(estado);
     }
 
+    // **** MAPEO DE ORDEN A DTO PARA RESPONSE
     private OrdenResponseDto mapToDTO(Orden orden){
         OrdenResponseDto dto = new OrdenResponseDto();
         dto.setId(orden.getId());

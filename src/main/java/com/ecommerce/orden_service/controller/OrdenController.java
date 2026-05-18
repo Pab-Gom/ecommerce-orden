@@ -1,16 +1,12 @@
 package com.ecommerce.orden_service.controller;
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.ecommerce.orden_service.dto.OrdenRequestDto;
 import com.ecommerce.orden_service.dto.OrdenResponseDto;
 import com.ecommerce.orden_service.model.Orden;
 import com.ecommerce.orden_service.service.OrdenService;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -27,6 +23,7 @@ public class OrdenController {
         @Valid @RequestBody OrdenRequestDto dto) {
     return ResponseEntity.ok(ordenService.crearOrden(dto));
     }
+
     // ****OBTENER TODAS
     @GetMapping
     public ResponseEntity<List<Orden>> obtenerTodas(){
