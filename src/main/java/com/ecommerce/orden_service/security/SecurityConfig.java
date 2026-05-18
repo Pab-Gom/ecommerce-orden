@@ -1,21 +1,39 @@
 package com.ecommerce.orden_service.security;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-public class SecurityConfig {
 
+public class SecurityConfig{
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+    
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        http.csrf(csrf -> csrf.disable())
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
-            );
-
-        return http.build();
+                .requestMatchers("/public/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/ordenes/{id}").permitAll()
+                .requestMatchers(HttpMethod.PATCH, "/ordenes/{id}/estado").permitAll()
+                .requestMatchers(HttpMethod.GET, "/ordenes/mis-ordenes").hasRole("USUARIO")
+                .requestMatchers(HttpMethod.GET, "/ordenes").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/ordenes/**").hasAnyRole("USUARIO", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/ordenes").hasAnyRole("USUARIO", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/ordenes/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/ordenes/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
     }
 }

@@ -14,7 +14,7 @@ import com.ecommerce.orden_service.service.OrdenService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/v1/ordenes")
+@RequestMapping("/ordenes")
 
 public class OrdenController {
     
@@ -77,5 +77,11 @@ public class OrdenController {
     public ResponseEntity<Void> eliminarPorEstado(@PathVariable String estado){
         ordenService.eliminarPorEstado(estado);
         return ResponseEntity.noContent().build();
+    }
+
+    // ****VER ORDENES DEL USUARIO
+    @GetMapping("/mis-ordenes")
+    public ResponseEntity<List<Orden>> obtenerMisOrdenes() {
+        return ResponseEntity.ok(ordenService.obtenerTodas());
     }
 }
