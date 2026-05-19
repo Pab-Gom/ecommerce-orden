@@ -74,7 +74,7 @@ public class OrdenService{
         return mapToDTO(guardada);
     }
 
-    // **** METODO PARA OBTENER TODAS LOS ORDENES
+    // **** METODO PARA OBTENER TODAS LOS ORDENES (ADMIN)
     public List<Orden> obtenerTodas() {
         if (esAdmin()) {
             return ordenRepository.findAll();
