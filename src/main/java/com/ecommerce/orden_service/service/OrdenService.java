@@ -75,6 +75,7 @@ public class OrdenService{
     }
 
     // **** METODO PARA OBTENER TODAS LOS ORDENES (ADMIN)
+
     public List<Orden> obtenerTodas() {
         if (esAdmin()) {
             return ordenRepository.findAll();
@@ -145,7 +146,8 @@ public class OrdenService{
         }
 
         if (!estado.equals("PENDIENTE") &&
-            !estado.equals("PAGADO")) {
+            !estado.equals("PAGADO") &&
+            !estado.equals("ENVIADO")) {
             throw new RuntimeException("Estado inválido");
         }
 
@@ -159,7 +161,7 @@ public class OrdenService{
         ordenRepository.delete(orden);
     }
 
-    // **** METODO PARA ELIMINAR ORDEN PO ESTADO (PENDIENTE O PAGADO)
+    // **** METODO PARA ELIMINAR ORDEN POR ESTADO (PENDIENTE O PAGADO)
     public void eliminarPorEstado(String estado){
         ordenRepository.deleteByEstado(estado);
     }

@@ -7,7 +7,7 @@ import com.ecommerce.orden_service.dto.OrdenRequestDto;
 import com.ecommerce.orden_service.dto.OrdenResponseDto;
 import com.ecommerce.orden_service.model.Orden;
 import com.ecommerce.orden_service.service.OrdenService;
-import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/ordenes")
@@ -20,7 +20,7 @@ public class OrdenController {
     // ****CREAR ORDEN
     @PostMapping
     public ResponseEntity<OrdenResponseDto> crearOrden(
-        @Valid @RequestBody OrdenRequestDto dto) {
+        @RequestBody OrdenRequestDto dto) {
     return ResponseEntity.ok(ordenService.crearOrden(dto));
     }
 
@@ -80,5 +80,12 @@ public class OrdenController {
     @GetMapping("/mis-ordenes")
     public ResponseEntity<List<Orden>> obtenerMisOrdenes() {
         return ResponseEntity.ok(ordenService.obtenerTodas());
+    }
+
+        // ****ELIMINAR ORDENES DEL USUARIO POR ID
+    @DeleteMapping("/mis-ordenes/{id}")
+    public ResponseEntity<Void> eliminarPorIdUsuario(@PathVariable Long id){
+        ordenService.eliminarPorId(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -66,12 +66,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
             log.info("JWT válido - email: {}, usuarioId: {}, rol: {}", email, usuarioId, role);
 
         } catch (Exception e){
-
             log.warn("Token inválido: {}", e.getMessage());
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token inválido o expirado");
+            SecurityContextHolder.clearContext();
+            filterChain.doFilter(request, response);
             return;
-
         }
         
         filterChain.doFilter(request, response);
