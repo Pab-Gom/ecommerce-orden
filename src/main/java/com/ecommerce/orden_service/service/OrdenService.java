@@ -1,6 +1,7 @@
 package com.ecommerce.orden_service.service;
 import com.ecommerce.orden_service.client.CarritoClient;
 import com.ecommerce.orden_service.dto.CarritoResponse;
+import com.ecommerce.orden_service.dto.ItemCarritoResponse;
 import com.ecommerce.orden_service.dto.OrdenRequestDto;
 import com.ecommerce.orden_service.dto.OrdenResponseDto;
 import com.ecommerce.orden_service.exception.IdUsuarioNoEncontradoException;
@@ -71,11 +72,10 @@ public class OrdenService{
         orden.setFechaCreacion(LocalDateTime.now());
         Orden guardada = ordenRepository.save(orden);
         log.info("Orden creada con id {} para email {}", guardada.getId(), email);
-        return mapToDTO(guardada);
+        return mapToDTO(guardada, carrito.getItems());
     }
 
     // **** METODO PARA OBTENER TODAS LOS ORDENES (ADMIN)
-
     public List<Orden> obtenerTodas() {
         if (esAdmin()) {
             return ordenRepository.findAll();
@@ -167,13 +167,14 @@ public class OrdenService{
     }
 
     // **** MAPEO DE ORDEN A DTO PARA RESPONSE
-    private OrdenResponseDto mapToDTO(Orden orden){
+    private OrdenResponseDto mapToDTO(Orden orden, List<ItemCarritoResponse> items){
         OrdenResponseDto dto = new OrdenResponseDto();
         dto.setId(orden.getId());
         dto.setUsuarioId(orden.getUsuarioId());
         dto.setTotal(orden.getTotal());
         dto.setEstado(orden.getEstado());
         dto.setFechaCreacion(orden.getFechaCreacion());
+        dto.setItems(items);
         return dto;
     }
 }
