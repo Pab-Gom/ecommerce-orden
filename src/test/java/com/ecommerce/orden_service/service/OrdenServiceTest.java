@@ -102,7 +102,7 @@ class OrdenServiceTest {
                 () -> ordenService.crearOrden(request)
         );
 
-        assertEquals("El carrito está vacío o no existe", exception.getMessage());
+        assertEquals("El carrito esta vacio o no existe", exception.getMessage());
     }
 
     @Test

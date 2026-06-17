@@ -1,7 +1,6 @@
 package com.ecommerce.orden_service.assembler;
 
 import com.ecommerce.orden_service.controller.OrdenControllerV2;
-import com.ecommerce.orden_service.dto.ItemCarritoResponse;
 import com.ecommerce.orden_service.dto.OrdenResponseDto;
 import com.ecommerce.orden_service.model.Orden;
 import org.springframework.hateoas.CollectionModel;
@@ -10,7 +9,6 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
