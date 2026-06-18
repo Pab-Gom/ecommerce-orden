@@ -22,7 +22,7 @@ public class SecurityConfig{
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/public/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/ordenes/mis-ordenes").hasAnyRole("USUARIO","ADMIN")
                 .requestMatchers(HttpMethod.GET, "/ordenes/{id}").hasAnyRole("USUARIO","ADMIN")
                 .requestMatchers(HttpMethod.PATCH, "/ordenes/{id}/estado").hasRole("ADMIN")
