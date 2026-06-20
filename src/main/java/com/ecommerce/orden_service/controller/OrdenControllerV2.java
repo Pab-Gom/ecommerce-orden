@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/ordenes")
+@RequestMapping("/api/v2/ordenes")
 @Tag(name = "Órdenes V2", description = "API de gestión de órdenes de compra con HATEOAS")
 public class OrdenControllerV2 {
 
@@ -45,8 +45,7 @@ public class OrdenControllerV2 {
     })
     public ResponseEntity<EntityModel<OrdenResponseDto>> crearOrden(@RequestBody OrdenRequestDto dto) {
         OrdenResponseDto dtoResponse = ordenService.crearOrden(dto);
-        Orden orden = ordenService.obtenerPorId(dtoResponse.getId());
-        return ResponseEntity.ok(assembler.toModel(orden));
+        return ResponseEntity.ok(assembler.toModelFromDto(dtoResponse));
     }
 
     // ****OBTENER TODAS

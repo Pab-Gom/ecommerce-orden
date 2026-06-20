@@ -28,6 +28,16 @@ public class OrdenModelAssembler implements RepresentationModelAssembler<Orden, 
         );
     }
 
+    public EntityModel<OrdenResponseDto> toModelFromDto(OrdenResponseDto dto) {
+        return EntityModel.of(dto,
+            linkTo(methodOn(OrdenControllerV2.class).obtenerPorId(dto.getId())).withSelfRel(),
+            linkTo(methodOn(OrdenControllerV2.class).obtenerTodas()).withRel("ordenes"),
+            linkTo(methodOn(OrdenControllerV2.class).obtenerMisOrdenes()).withRel("mis-ordenes"),
+            linkTo(methodOn(OrdenControllerV2.class).obtenerPorEstado(dto.getEstado())).withRel("estado"),
+            linkTo(methodOn(OrdenControllerV2.class).obtenerPorUsuario(dto.getUsuarioId())).withRel("usuario")
+        );
+    }
+
     @Override
     public CollectionModel<EntityModel<OrdenResponseDto>> toCollectionModel(Iterable<? extends Orden> entities) {
         CollectionModel<EntityModel<OrdenResponseDto>> models = RepresentationModelAssembler.super.toCollectionModel(entities);
