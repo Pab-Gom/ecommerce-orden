@@ -85,6 +85,12 @@ public class OrdenService{
         return ordenRepository.findByUsuarioId(usuarioId);
     }
 
+    // **** METODO PARA OBTENER MIS ORDENES (USUARIO LOGGEADO)
+    public List<Orden> obtenerMisOrdenes() {
+        Long usuarioId = getUsuarioIdFromToken();
+        return ordenRepository.findByUsuarioId(usuarioId);
+    }
+
     // **** METODO PARA OBTENER ORDENES POR ID
     public Orden obtenerPorId(Long id) {
         Orden orden = ordenRepository.findById(id)

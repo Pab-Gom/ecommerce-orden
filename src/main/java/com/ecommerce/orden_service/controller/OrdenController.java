@@ -173,7 +173,7 @@ public class OrdenController {
         @ApiResponse(responseCode = "401", description = "No autenticado")
     })
     public ResponseEntity<List<Orden>> obtenerMisOrdenes() {
-        return ResponseEntity.ok(ordenService.obtenerTodas());
+        return ResponseEntity.ok(ordenService.obtenerMisOrdenes());
     }
 
     // ****ELIMINAR ORDENES DEL USUARIO POR ID

@@ -38,8 +38,7 @@ public class OrdenControllerV2 {
     @Operation(summary = "Crear una nueva orden",
                description = "Crea una orden a partir del carrito del usuario autenticado.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Orden creada exitosamente",
-                     content = @Content(schema = @Schema(implementation = OrdenResponseDto.class))),
+        @ApiResponse(responseCode = "200", description = "Orden creada exitosamente"),
         @ApiResponse(responseCode = "400", description = "Carrito vacío o datos inválidos"),
         @ApiResponse(responseCode = "401", description = "No autenticado")
     })
