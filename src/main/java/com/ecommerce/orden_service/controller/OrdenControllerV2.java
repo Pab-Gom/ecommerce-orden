@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/api/v2/ordenes")
+@RequestMapping("/v2/ordenes")
 @Tag(name = "Órdenes V2", description = "API de gestión de órdenes de compra con HATEOAS")
 public class OrdenControllerV2 {
 
